@@ -12,6 +12,16 @@ import { changePasswordInvestigator } from "../../controllers/user/changePasswor
 
 const router = Router();
 
+
+/**
+ * Raíz del sistema: siempre redirige al login de jugadores
+ * GET /
+ */
+router.get("/", (req, res) => {
+  return res.redirect("/views/login");
+});
+
+
 /**
  * Registro de jugadores
  * POST /user/register-player

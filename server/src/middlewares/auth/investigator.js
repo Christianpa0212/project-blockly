@@ -8,7 +8,7 @@
 import { pool } from "../../config/db/db.js";
 
 // Tiempo máximo de inactividad permitido para investigadores (segundos)
-const INVESTIGATOR_IDLE_TIMEOUT_SEC = 120; // 2 minutos
+const INVESTIGATOR_IDLE_TIMEOUT_SEC = 900; // 15 minutos
 
 // Extrae el session_id desde los encabezados Authorization o x-session-id
 function readSessionId(req) {

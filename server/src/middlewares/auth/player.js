@@ -1,16 +1,14 @@
 // =======================================================
 // Middleware de autenticación para jugadores
 // -------------------------------------------------------
-// - Valida la sesión del jugador a partir de headers.
-// - Verifica estado, rol y tiempo de inactividad.
-// - Refresca el último ping y expone datos en req.auth.
+// - Lee el sesion_id desde Authorization o x-session-id.
+// - Verifica que la sesión exista y no esté finalizada.
+// - Verifica que el rol sea "jugador".
+// - Actualiza último ping y expone datos en req.auth.
 // =======================================================
 import { pool } from "../../config/db/db.js";
 
-// Tiempo máximo de inactividad permitido para jugadores (segundos)
-const PLAYER_IDLE_TIMEOUT_SEC = 300; // 5 minutos
-
-// Extrae el session_id desde los encabezados Authorization o x-session-id
+// Lee el session_id desde los encabezados Authorization o x-session-id
 function readSessionId(req) {
   const auth = req.get("authorization");
   if (auth && auth.toLowerCase().startsWith("bearer ")) {
@@ -23,13 +21,13 @@ function readSessionId(req) {
 // Middleware principal de protección de rutas para jugadores
 export const requirePlayerAuth = async (req, res, next) => {
   try {
-    // Obtiene el identificador de sesión desde los headers
+    // 1) Obtener el identificador de sesión desde headers
     const sessionId = readSessionId(req);
     if (!sessionId) {
       return res.status(401).json({ ok: false, msg: "Falta session_id" });
     }
 
-    // Consulta de la sesión y datos asociados desde la vista de autenticación
+    // 2) Consultar datos básicos de sesión desde la vista de autenticación
     const [rows] = await pool.query(
       `
       SELECT
@@ -38,8 +36,6 @@ export const requirePlayerAuth = async (req, res, next) => {
         inicio_en,
         fin_en,
         ultimo_ping,
-        idle_seconds,
-        segundos_totales,
         rol_id,
         rol
       FROM vw_auth_middlewares
@@ -61,39 +57,18 @@ export const requirePlayerAuth = async (req, res, next) => {
       return res.status(401).json({ ok: false, msg: "Sesión finalizada" });
     }
 
-    // Validación de rol específico de jugador
+    // 3) Validar que el rol corresponda a un jugador
     if (String(sesion.rol).toLowerCase() !== "jugador") {
       return res.status(403).json({ ok: false, msg: "Solo jugadores" });
     }
 
-    // Verificación de tiempo de inactividad y cierre por timeout
-    if (
-      sesion.idle_seconds !== null &&
-      sesion.idle_seconds > PLAYER_IDLE_TIMEOUT_SEC
-    ) {
-      await pool.query(
-        `
-        UPDATE SESION
-        SET
-          fin_en = NOW(),
-          segundos_totales = TIMESTAMPDIFF(SECOND, inicio_en, NOW())
-        WHERE id = ?
-        `,
-        [sessionId]
-      );
-
-      return res
-        .status(401)
-        .json({ ok: false, msg: "Sesión expirada por inactividad" });
-    }
-
-    // Refresco del último ping de actividad de la sesión
+    // 4) Actualizar último ping de actividad (sin cerrar la sesión)
     await pool.query(
       `UPDATE SESION SET ultimo_ping = NOW() WHERE id = ?`,
       [sessionId]
     );
 
-    // Datos de sesión disponibles para los controladores posteriores
+    // 5) Exponer datos de sesión para los controladores siguientes
     req.auth = {
       sesion_id: sesion.sesion_id,
       usuario_id: sesion.usuario_id,
