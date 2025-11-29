@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Panel Investigador • Blockly</title>
+  <link rel="stylesheet" href="/static-files/css/login.css">
+  <link rel="stylesheet" href="/static-files/css/dashboard.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- NAVBAR FIJA -->
+  <header class="topbar" role="banner">
+    <div class="topbar__container">
+      <div class="topbar__left">
+        <h1 class="title">Panel de Investigación</h1>
+      </div>
+      <div class="topbar__right">
+        <button id="btnNewInvestigator" class="btn btn-accent">+ Nuevo investigador</button>
+        <button id="btnChangePass" class="btn btn-ghost">Cambiar contraseña</button>
+        <button id="btnLogout" class="btn btn-ghost">Cerrar sesión</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENIDO -->
+  <main class="content" role="main">
+    <section class="card card--players">
+      <div class="card__head">
+        <h2 class="card__title">Jugadores</h2>
+        <div class="card__actions">
+          <input id="txtSearch" class="input input--search" placeholder="Buscar por nombre o PIN…">
+        </div>
+      </div>
+
+      <div id="playersStatus" class="status"></div>
+
+      <div class="table-wrap">
+        <table class="table" id="playersTable" aria-describedby="playersStatus">
+          <thead>
+            <tr>
+              <th>PIN</th>
+              <th>Nombre</th>
+              <th>Niveles Completados</th>
+              <th>Sesiones</th>
+              <th>Última sesión</th>
+              <th style="width:1%;white-space:nowrap;">Acción</th>
+            </tr>
+          </thead>
+          <tbody id="playersTbody">
+            <!-- se llena por JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- MODAL: Nuevo investigador -->
+  <dialog id="dlgInvestigator" class="modal">
+    <form method="dialog" class="modal__card" id="formInvestigator" autocomplete="off">
+      <header class="modal__head">
+        <h3>Registrar investigador</h3>
+      </header>
+      <div class="modal__body">
+        <div class="grid">
+          <label>PIN
+            <input id="invPin" class="input" maxlength="4" inputmode="numeric" placeholder="0000" required>
+          </label>
+          <label>Nombre
+            <input id="invNombre" class="input" required>
+          </label>
+          <label>Apellidos
+            <input id="invApellidos" class="input" required>
+          </label>
+          <label>Contraseña
+            <input id="invPassword" class="input" type="password" minlength="8" placeholder="mín. 8 caracteres" required>
+          </label>
+        </div>
+        <div id="invMsg" class="status" role="status"></div>
+      </div>
+      <footer class="modal__foot">
+        <button type="button" class="btn btn-ghost" id="btnCancel">Cancelar</button>
+        <button type="submit" class="btn btn-accent" id="btnSave">Guardar</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- MODAL: Cambiar contraseña -->
+  <dialog id="dlgChangePass" class="modal">
+    <form method="dialog" class="modal__card" id="formChangePass" autocomplete="off">
+      <header class="modal__head">
+        <h3>Cambiar contraseña</h3>
+      </header>
+      <div class="modal__body">
+        <div class="grid">
+          <label>Contraseña actual
+            <input id="curPass" class="input" type="password" required>
+          </label>
+          <label>Nueva contraseña
+            <input id="newPass" class="input" type="password" minlength="8" placeholder="mín. 8 caracteres" required>
+          </label>
+          <label>Confirmar nueva
+            <input id="newPass2" class="input" type="password" minlength="8" required>
+          </label>
+        </div>
+        <div id="passMsg" class="status" role="status"></div>
+      </div>
+      <footer class="modal__foot">
+        <button type="button" class="btn btn-ghost" id="btnPassCancel">Cancelar</button>
+        <button type="submit" class="btn btn-accent" id="btnPassSave">Guardar</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <script src="/static-files/js/dashboard.js"></script>
+</body>
+</html>

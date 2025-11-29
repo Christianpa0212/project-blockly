@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
+  <title>Estadísticas por jugador • Blockly</title>
+
+  <!--
+    Fuente principal de la interfaz.
+    Inter es una fuente limpia y legible que funciona bien para dashboards.
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <!--
+    Hoja de estilos específica de esta vista.
+    Aquí se definen colores, tarjetas, tablas, botones, etc.
+  -->
+  <link rel="stylesheet" href="/static-files/css/player.css">
+</head>
+<body>
+  <!--
+    ==========================
+    BARRA SUPERIOR (NAVBAR)
+    ==========================
+    Contiene:
+    - Botón para regresar al dashboard principal.
+    - Título del módulo.
+    - Botón para cerrar sesión del investigador.
+  -->
+  <header class="topbar" role="banner">
+    <div class="topbar__container">
+      <div class="topbar__left">
+        <a class="btn btn-ghost" href="/views/dashboard.html">← Regresar</a>
+        <h1 class="title">Centro de estadísticas</h1>
+      </div>
+      <div class="topbar__right">
+        <button id="btnLogout" class="btn btn-ghost">Cerrar sesión</button>
+      </div>
+    </div>
+  </header>
+
+  <!--
+    ==========================
+    CONTENIDO PRINCIPAL
+    ==========================
+    Aquí viven todos los bloques de información:
+    - Header con datos básicos del jugador.
+    - Resumen general de desempeño.
+    - Estadísticas por juego.
+    - Detalle por nivel.
+  -->
+  <main class="content" role="main">
+    <!--
+      BLOQUE: HEADER DE JUGADOR
+      Muestra:
+      - Nombre del jugador.
+      - PIN.
+      - Número total de sesiones.
+      - Fecha/hora de la última sesión.
+      El div #statusHeader se usa para mostrar mensajes de carga o error.
+    -->
+    <section class="card card--header">
+      <div class="header-row">
+        <div>
+          <h2 id="playerName" class="h2">Jugador —</h2>
+          <div class="muted" id="playerPin">PIN —</div>
+        </div>
+        <div class="chips">
+          <span class="chip">
+            <strong id="chipSesiones">0</strong> sesiones
+          </span>
+          <span class="chip">
+            Última: <span id="chipUltima">—</span>
+          </span>
+        </div>
+      </div>
+      <div id="statusHeader" class="status"></div>
+    </section>
+
+    <!--
+      ===================================================
+      BLOQUE 1: RESUMEN GENERAL DEL JUGADOR
+      ===================================================
+      KPIs globales que consideran todos los juegos:
+      - Niveles completados.
+      - Intentos totales.
+      - Promedio de tiempo por intento (mm:ss).
+      - Promedio de tiempo por sesión (hh:mm:ss).
+      - Porcentajes y cantidades de éxito, fallo y abandono.
+      Debajo se muestran 3 paneles con gráficos:
+      - Pastel por estado.
+      - Barras apiladas por juego.
+      - Serie por sesión (intentos + tiempo).
+    -->
+    <section class="card">
+      <h3 class="h3">Resumen general</h3>
+
+      <!-- KPIs globales -->
+      <div class="kpis kpis--wrap">
+        <div class="kpi">
+          <div class="kpi__label">Niveles completados</div>
+          <div id="kpiNiveles" class="kpi__val">0</div>
+        </div>
+
+        <div class="kpi">
+          <div class="kpi__label">Intentos totales</div>
+          <div id="kpiIntentos" class="kpi__val">0</div>
+        </div>
+
+        <div class="kpi">
+          <div class="kpi__label">Prom. tiempo/intent (mm:ss)</div>
+          <div id="kpiTpi" class="kpi__val">00:00</div>
+        </div>
+
+        <div class="kpi">
+          <div class="kpi__label">Prom. tiempo/sesión (hh:mm:ss)</div>
+          <div id="kpiTps" class="kpi__val">00:00:00</div>
+        </div>
+
+        <!--
+          Estos 3 KPIs muestran:
+          - Cantidad de intentos.
+          - Porcentaje respecto al total.
+          Ejemplo: "7 (9.86%)"
+        -->
+        <div class="kpi">
+          <div class="kpi__label">% éxito</div>
+          <div id="kpiExito" class="kpi__val">0 (0.00%)</div>
+        </div>
+
+        <div class="kpi">
+          <div class="kpi__label">% fallo</div>
+          <div id="kpiFallo" class="kpi__val">0 (0.00%)</div>
+        </div>
+
+        <div class="kpi">
+          <div class="kpi__label">% abandono</div>
+          <div id="kpiAband" class="kpi__val">0 (0.00%)</div>
+        </div>
+      </div>
+
+      <!-- PANEL: Pastel de distribución por estado (éxito / fallo / abandono) -->
+      <div class="panel">
+        <div class="panel__head">
+          <span>Distribución por estado</span>
+        </div>
+        <div class="chart">
+          <canvas id="chartEstado"></canvas>
+        </div>
+      </div>
+
+      <!-- PANEL: Intentos por juego (barras apiladas por estado) -->
+      <div class="panel">
+        <div class="panel__head">
+          <span>Intentos por juego</span>
+        </div>
+        <div class="chart">
+          <canvas id="chartJuego"></canvas>
+        </div>
+      </div>
+
+      <!--
+        PANEL: Intentos por sesión + tiempo promedio
+        - Barras apiladas por sesión (éxito/fallo/abandono).
+        - Línea con el tiempo promedio por intento en esa sesión.
+        Incluye filtros de fecha para limitar el rango de sesiones.
+      -->
+      <div class="panel">
+        <div class="panel__head">
+          <span>Intentos por sesión (éxito/fallo/abandono) + tiempo prom. por intento</span>
+        </div>
+
+        <!-- Filtros de rango de fechas para la serie por sesión -->
+        <div class="filters-row">
+          <label>
+            De
+            <input type="date" id="fFrom" class="input">
+          </label>
+          <label>
+            A
+            <input type="date" id="fTo" class="input">
+          </label>
+          <button id="btnFiltrarSes" class="btn btn-ghost">Filtrar</button>
+        </div>
+
+        <div class="chart chart--lg">
+          <canvas id="chartSesiones"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!--
+      ===================================================
+      BLOQUE 2: ESTADÍSTICAS POR JUEGO
+      ===================================================
+      Permite seleccionar un juego (Maze, Puzzle, etc.) y ver:
+      - Niveles completados en ese juego.
+      - Intentos totales del juego.
+      - Promedio de intentos por nivel.
+      - Promedio de tiempo por nivel (hh:mm:ss).
+      - Promedio de tiempo por intento (mm:ss).
+      - Porcentaje de éxito, fallo y abandono dentro del juego.
+    -->
+    <section class="card">
+      <div class="row-between">
+        <h3 class="h3">Estadísticas por juego</h3>
+
+        <!-- Selector de juego; se llena dinámicamente desde player.js -->
+        <label class="label-inline">
+          Juego
+          <select id="selJuego" class="input input--select"></select>
+        </label>
+      </div>
+
+      <!-- KPIs específicos del juego seleccionado -->
+      <div class="kpis kpis--wrap">
+        <div class="kpi">
+          <div class="kpi__label">Niveles completados</div>
+          <div id="gjNivComp" class="kpi__val">0</div>
+        </div>
+
+        <div class="kpi">
+          <div class="kpi__label">Intentos (juego)</div>
+          <div id="gjIntentos" class="kpi__val">0</div>
+        </div>
+
+        <div class="kpi">
+          <div class="kpi__label">Prom. intentos/nivel</div>
+          <div id="gjPromIntNivel" class="kpi__val">0.00</div>
+        </div>
+
+        <div class="kpi">
+          <div class="kpi__label">Prom. tiempo/nivel (hh:mm:ss)</div>
+          <div id="gjPromSegNivel" class="kpi__val">00:00:00</div>
+        </div>
+
+        <div class="kpi">
+          <div class="kpi__label">Prom. tiempo/intento (mm:ss)</div>
+          <div id="gjPromSegIntento" class="kpi__val">00:00</div>
+        </div>
+
+        <div class="kpi">
+          <div class="kpi__label">% éxito</div>
+          <div id="gjPctExito" class="kpi__val">0%</div>
+        </div>
+
+        <div class="kpi">
+          <div class="kpi__label">% fallo</div>
+          <div id="gjPctFallo" class="kpi__val">0%</div>
+        </div>
+
+        <div class="kpi">
+          <div class="kpi__label">% abandono</div>
+          <div id="gjPctAband" class="kpi__val">0%</div>
+        </div>
+      </div>
+    </section>
+
+    <!--
+      ===================================================
+      BLOQUE 3: NIVELES DEL JUEGO
+      ===================================================
+      Tabla que resume el desempeño del jugador nivel por nivel
+      para el juego seleccionado:
+      - Número de nivel.
+      - Estado (COMPLETADO, ABANDONO, PENDIENTE, etc.) con una etiqueta de color.
+      - Tiempo acumulado en el nivel (suma de todos los intentos) en mm:ss.
+      - Promedio de tiempo por intento en ese nivel en mm:ss.
+      - Primer y último intento con fecha y hora.
+      - Intentos totales por nivel.
+      - Botón para abrir el detalle de intentos del nivel.
+    -->
+    <section class="card">
+      <h3 class="h3">Niveles del juego</h3>
+
+      <!-- Contenedor para permitir scroll horizontal en pantallas pequeñas -->
+      <div class="table-wrapper">
+        <table class="table table--levels" id="tblNiveles">
+          <thead>
+            <tr>
+              <th>Nivel</th>
+              <th>Estado</th>
+              <th>Tiempo acumulado (mm:ss)</th>
+              <th>Prom. tiempo/intent (mm:ss)</th>
+              <th>Primer intento</th>
+              <th>Último intento</th>
+              <th>Intentos totales</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody id="tbNiveles"></tbody>
+        </table>
+      </div>
+
+      <!-- Mensajes de estado para la tabla de niveles (sin datos, errores, etc.) -->
+      <div id="statusNiveles" class="status"></div>
+    </section>
+  </main>
+
+  <!--
+    ===================================================
+    MODAL 1: INTENTOS DEL NIVEL
+    ===================================================
+    Se abre al pulsar "Ver intentos" en la tabla de niveles.
+    Muestra una tabla con todos los intentos del nivel seleccionado:
+    - Número consecutivo.
+    - Estado del intento.
+    - Duración en mm:ss.
+    - Bloques utilizados.
+    - Fecha y hora del intento.
+    Desde aquí se puede abrir el detalle de eventos y código.
+  -->
+  <dialog id="dlgAttempts" class="modal">
+    <section class="modal__card">
+      <header class="modal__head">
+        <h3>
+          Intentos del nivel <span id="dlgLevelTitle"></span>
+        </h3>
+      </header>
+
+      <div class="modal__body">
+        <table class="table table--attempts" id="tblAttempts">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Estado</th>
+              <th>Duración (mm:ss)</th>
+              <th>Bloques utilizados</th>
+              <th>Fecha y hora</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody id="tbAttempts"></tbody>
+        </table>
+
+        <!-- Paginador de intentos dentro del nivel -->
+        <div class="row-between">
+          <div id="statusAttempts" class="status"></div>
+          <div class="pager">
+            <button id="btnPrevAtt" class="btn btn-ghost btn-sm">◀</button>
+            <span id="lblPageAtt" class="muted">1</span>
+            <button id="btnNextAtt" class="btn btn-ghost btn-sm">▶</button>
+          </div>
+        </div>
+      </div>
+
+      <footer class="modal__foot">
+        <button id="btnCloseAttempts" class="btn btn-ghost">Cerrar</button>
+      </footer>
+    </section>
+  </dialog>
+
+  <!--
+    ===================================================
+    MODAL 2: EVENTOS DEL INTENTO
+    ===================================================
+    Se abre desde el modal anterior al pulsar "Eventos / Código".
+    Muestra:
+    - Una secuencia narrativa de lo que ocurrió durante el intento
+      (creó bloque, movió bloque, conectó bloques, etc.).
+    - El código JavaScript generado por Blockly para ese intento.
+  -->
+  <dialog id="dlgEvents" class="modal">
+    <section class="modal__card">
+      <header class="modal__head">
+        <h3>
+          Eventos del intento <span id="dlgAttemptTitle"></span>
+        </h3>
+      </header>
+
+      <div class="modal__body">
+        <!-- Subtítulo de la tabla de eventos -->
+        <p class="modal-subtitle">Secuencia durante el intento</p>
+
+        <!-- Tabla con la secuencia de acciones del jugador en ese intento -->
+        <table class="table table--events" id="tblEvents">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Secuencia del evento</th>
+            </tr>
+          </thead>
+          <tbody id="tbEvents"></tbody>
+        </table>
+
+
+        <!-- Subtítulo del bloque de código -->
+        <p class="modal-subtitle">Código generado</p>
+
+        <!-- Código JS generado por Blockly para ese intento -->
+        <pre id="codeBox" class="code"></pre>
+
+        <!-- Paginador de eventos (si existieran muchos) -->
+        <div class="row-between">
+          <div id="statusEvents" class="status"></div>
+          <div class="pager">
+            <button id="btnPrevEv" class="btn btn-ghost btn-sm">◀</button>
+            <span id="lblPageEv" class="muted">1</span>
+            <button id="btnNextEv" class="btn btn-ghost btn-sm">▶</button>
+          </div>
+        </div>
+      </div>
+
+      <footer class="modal__foot">
+        <button id="btnCloseEvents" class="btn btn-ghost">Cerrar</button>
+      </footer>
+    </section>
+  </dialog>
+
+  <!--
+    Librería de gráficos Chart.js (CDN).
+    Se utiliza para los 3 gráficos principales:
+    - chartEstado
+    - chartJuego
+    - chartSesiones
+  -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!--
+    Lógica de esta vista:
+    - Peticiones al backend con fetch autenticado.
+    - Transformación de datos en KPIs, tablas y gráficas.
+    - Control de los modales y paginación.
+  -->
+  <script src="/static-files/js/player.js"></script>
+</body>
+</html>

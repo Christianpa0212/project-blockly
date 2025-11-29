@@ -1,0 +1,564 @@
+/* =========================================================
+   VARIABLES GLOBALES Y ESTILOS BASE
+   ========================================================= */
+:root{
+  /* Colores principales del dashboard */
+  --bg:#0b1220;
+  --card:#111a2b;
+  --text:#e8edf7;
+  --muted:#9fb2d0;
+  --accent:#5aa9ff;
+
+  /* Alturas de gráficos (se usan en los paneles Chart.js) */
+  --chart-h: 240px;
+  --chart-h-lg: 260px;
+  --chart-h-sm: 200px;
+
+  /* Layout general */
+  --maxw: 1100px;   /* ancho máximo del contenido */
+  --radius: 16px;
+  --gap: 16px;
+}
+
+/* Reset básico */
+*{ box-sizing:border-box; }
+
+html,body{ height:100%; }
+
+html,body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Inter,ui-sans-serif,system-ui,"Segoe UI",Roboto,Ubuntu;
+  overflow-x:hidden; /* evita scroll horizontal accidental */
+}
+
+
+/* =========================================================
+   TOPBAR FIJA (NAVBAR SUPERIOR)
+   ========================================================= */
+.topbar{
+  position:fixed;
+  inset:0 0 auto 0;     /* fija arriba, ancho completo */
+  z-index:1000;
+  background:var(--card);
+  border-bottom:1px solid rgba(255,255,255,.10);
+}
+
+.topbar__container{
+  max-width:var(--maxw);
+  margin:0 auto;
+  padding:14px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.topbar__left{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.title{
+  margin:0;
+  font-size:1.12rem;
+}
+
+
+/* =========================================================
+   LAYOUT PRINCIPAL (TARJETAS APILADAS)
+   ========================================================= */
+.content{
+  padding:92px 16px 40px;               /* deja espacio para la topbar fija */
+  display:flex;
+  flex-direction:column;
+  gap:var(--gap);
+  align-items:center;
+}
+
+/* Tarjeta base reutilizable */
+.card{
+  width:100%;
+  max-width:var(--maxw);
+  background:var(--card);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:var(--radius);
+  box-shadow:0 10px 30px rgba(0,0,0,.35);
+  padding:18px;
+}
+
+/* Header del jugador, con un poco más de aire */
+.card--header{
+  padding:18px 20px;
+}
+
+/* Títulos y texto secundario */
+.h2{
+  margin:0 0 4px 0;
+  font-size:1.25rem;
+}
+
+.h3{
+  margin:0 0 12px 0;
+  font-size:1.05rem;
+}
+
+.muted{
+  color:var(--muted);
+  font-size:.92rem;
+}
+
+
+/* =========================================================
+   FILAS DE DISTRIBUCIÓN (HEADER, FILTROS, ETC.)
+   ========================================================= */
+.header-row{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+  flex-wrap:wrap;
+}
+
+.row-between{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+.filters-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin:10px 0 6px;
+}
+
+
+/* =========================================================
+   CHIPS / PASTILLAS DE INFORMACIÓN
+   ========================================================= */
+.chips{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.chip{
+  background:#0c1424;
+  color:var(--muted);
+  border:1px solid rgba(255,255,255,.10);
+  padding:8px 10px;
+  border-radius:999px;
+  font-size:.9rem;
+}
+
+
+/* =========================================================
+   KPIs (CUADRITOS RESUMEN)
+   ========================================================= */
+.kpis{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+/* Cada KPI ocupa al menos 220px y se adapta al ancho disponible */
+.kpis--wrap .kpi{
+  flex:1 1 220px;
+}
+
+.kpi{
+  background:#0c1424;
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:12px;
+  padding:8px 10px;
+}
+
+.kpi__label{
+  color:var(--muted);
+  font-size:.82rem;
+}
+
+.kpi__val{
+  font-size:1.02rem;
+  font-weight:800;
+  margin-top:2px;
+}
+
+
+/* =========================================================
+   PANELES Y ÁREAS DE GRÁFICAS
+   ========================================================= */
+.panel{
+  background:#0b1322;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:12px;
+  padding:10px;
+}
+
+/* Separación vertical entre paneles dentro de una tarjeta */
+.panel + .panel{
+  margin-top:12px;
+}
+
+.panel__head{
+  font-size:.88rem;
+  color:var(--muted);
+  margin-bottom:6px;
+}
+
+/* Contenedor para los canvas de Chart.js */
+.chart{
+  width:100%;
+  height:var(--chart-h);
+  position:relative;
+  display:block;
+}
+
+/* Variantes de altura para algunas gráficas */
+.chart.chart--lg{ height:var(--chart-h-lg); }
+.chart.chart--sm{ height:var(--chart-h-sm); }
+
+/* En pantallas pequeñas bajamos ligeramente la altura de las gráficas */
+@media (max-width:900px){
+  :root{
+    --chart-h: var(--chart-h-sm);
+    --chart-h-lg: 220px;
+  }
+}
+
+
+/* =========================================================
+   TABLA DE NIVELES DEL JUEGO
+   ========================================================= */
+/* Tabla de niveles (bloque principal) */
+.table--levels{
+  font-size:0.9rem;
+}
+
+.table--levels thead th,
+.table--levels tbody td{
+  padding:8px 10px;
+}
+
+/* Contenedor que permite scroll horizontal en móvil si es necesario */
+.table-wrapper{
+  width:100%;
+  overflow-x:auto;
+}
+
+/* Centrar todo el contenido en la tabla de niveles */
+.table--levels th,
+.table--levels td{
+  text-align:center;
+  vertical-align:middle;
+}
+
+/* Fechas (primer/último intento) en una sola línea */
+.table--levels th:nth-child(5),
+.table--levels td:nth-child(5),
+.table--levels th:nth-child(6),
+.table--levels td:nth-child(6){
+  white-space:nowrap;
+}
+
+/* Columnas de intentos totales y acción compactas */
+.table--levels th:nth-child(7),
+.table--levels td:nth-child(7),
+.table--levels th:nth-child(8),
+.table--levels td:nth-child(8){
+  white-space:nowrap;
+}
+
+/* Columna del número de nivel con ancho fijo pequeño */
+.table--levels th:nth-child(1),
+.table--levels td:nth-child(1){
+  width:60px;
+}
+
+/* Versión móvil: texto y celdas ligeramente más compactas */
+@media (max-width:900px){
+  .table--levels{
+    font-size:0.8rem;
+  }
+
+  .table--levels thead th,
+  .table--levels tbody td{
+    padding:6px 6px;
+  }
+}
+
+
+/* =========================================================
+   TAGS / PASTILLAS DE ESTADO (COMPLETADO, ABANDONO, ETC.)
+   ========================================================= */
+.tag{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:2px 8px;
+  border-radius:999px;
+  font-size:0.75rem;
+  font-weight:600;
+}
+
+/* Estados coloreados (se usan en la columna "Estado") */
+.tag--success{
+  background:rgba(80,230,150,0.12);
+  color:#7CFFB3;
+}
+
+.tag--warning{
+  background:rgba(255,190,110,0.14);
+  color:#FFD28A;
+}
+
+.tag--danger{
+  background:rgba(255,120,120,0.14);
+  color:#FF9F9F;
+}
+
+.tag--neutral{
+  background:rgba(159,178,208,0.16);
+  color:var(--muted);
+}
+
+
+/* =========================================================
+   TABLA DE INTENTOS (MODAL DE INTENTOS DEL NIVEL)
+   ========================================================= */
+.table--attempts{
+  font-size:0.9rem;
+}
+
+.table--attempts thead th,
+.table--attempts tbody td{
+  padding:8px 10px;
+}
+
+/* Centramos todo el contenido de la tabla de intentos */
+.table--attempts th,
+.table--attempts td{
+  text-align:center;
+  vertical-align:middle;
+}
+
+/* Columna # más angosta */
+.table--attempts th:nth-child(1),
+.table--attempts td:nth-child(1){
+  width:40px;
+}
+
+/* Fecha y acción en una sola línea para que no se rompa el layout */
+.table--attempts th:nth-child(5),
+.table--attempts td:nth-child(5),
+.table--attempts th:nth-child(6),
+.table--attempts td:nth-child(6){
+  white-space:nowrap;
+}
+
+/* Versión móvil un poco más compacta */
+@media (max-width:900px){
+  .table--attempts{
+    font-size:0.85rem;
+  }
+
+  .table--attempts thead th,
+  .table--attempts tbody td{
+    padding:6px 6px;
+  }
+}
+
+
+/* =========================================================
+   TABLA DE EVENTOS (MODAL DE EVENTOS DEL INTENTO)
+   ========================================================= */
+/* Subtítulo de secciones dentro de los modales */
+.modal-subtitle{
+  margin:0 0 8px;
+  font-size:0.85rem;
+  font-weight:600;
+  color:var(--muted);
+}
+
+/* Tabla donde se describe la secuencia de eventos del intento */
+.table--events{
+  font-size:0.85rem;
+  margin-bottom:1rem;
+}
+
+.table--events thead th,
+.table--events tbody td{
+  padding:6px 8px;
+}
+
+/* Alineación general de la tabla de eventos */
+.table--events th,
+.table--events td{
+  vertical-align:middle;
+}
+
+/* Columna # centrada y angosta */
+.table--events th:nth-child(1),
+.table--events td:nth-child(1){
+  text-align:center;
+  width:40px;
+}
+
+/* La descripción del evento se lee mejor alineada a la izquierda */
+.table--events th:nth-child(2),
+.table--events td:nth-child(2){
+  text-align:left;
+}
+
+/* Bloque y fecha centrados y sin salto de línea */
+.table--events th:nth-child(3),
+.table--events td:nth-child(3),
+.table--events th:nth-child(4),
+.table--events td:nth-child(4){
+  white-space:nowrap;
+  text-align:center;
+}
+
+/* Versión móvil de la tabla de eventos */
+@media (max-width:900px){
+  .table--events{
+    font-size:0.8rem;
+  }
+}
+
+
+/* =========================================================
+   INPUTS Y BOTONES
+   ========================================================= */
+.input{
+  width:auto;
+  min-width:220px;
+  padding:10px 12px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.12);
+  background:#0b1322;
+  color:var(--text);
+  outline:none;
+}
+
+.input:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(90,169,255,.15);
+}
+
+/* Selects con un ancho mínimo ligeramente menor */
+.input--select{
+  min-width:180px;
+}
+
+.btn{
+  border:none;
+  border-radius:12px;
+  padding:10px 14px;
+  cursor:pointer;
+  font-weight:700;
+}
+
+/* Botón “fantasma”: borde y texto, fondo transparente */
+.btn-ghost{
+  background:transparent;
+  color:var(--muted);
+  border:1px solid rgba(255,255,255,.18);
+}
+
+.btn-sm{
+  padding:6px 10px;
+  font-size:.9rem;
+}
+
+.btn:disabled{
+  opacity:.6;
+  cursor:not-allowed;
+}
+
+
+/* =========================================================
+   MENSAJES DE ESTADO (OK / ERROR)
+   ========================================================= */
+.status{
+  margin:8px 0 0;
+  display:none;
+  font-size:.92rem;
+}
+
+.status.ok{
+  color:#79e2a3;
+  display:block;
+}
+
+.status.err{
+  color:#ff8892;
+  display:block;
+}
+
+
+/* =========================================================
+   MODALES (INTENTOS Y EVENTOS)
+   ========================================================= */
+.modal{
+  display:none;
+  border:none;
+  padding:0;
+  background:transparent;
+  width:min(100%, var(--maxw));
+}
+
+.modal[open]{
+  display:block;
+}
+
+/* Fondo oscuro detrás del modal */
+.modal::backdrop{
+  background:rgba(0,0,0,.6);
+}
+
+/* Tarjeta interna del modal */
+.modal__card{
+  width:100%;
+  background:var(--card);
+  color:var(--text);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:var(--radius);
+  overflow:hidden;
+}
+
+.modal__head{
+  padding:16px 18px;
+  border-bottom:1px solid rgba(255,255,255,.10);
+}
+
+.modal__body{
+  padding:18px;
+}
+
+.modal__foot{
+  padding:14px 18px;
+  border-top:1px solid rgba(255,255,255,.10);
+  display:flex;
+  justify-content:flex-end;
+  gap:8px;
+}
+
+
+/* =========================================================
+   BLOQUE DE CÓDIGO (CÓDIGO GENERADO POR BLOCKLY)
+   ========================================================= */
+.code{
+  background:#0b1322;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:12px;
+  padding:12px;
+  max-height:280px;
+  overflow:auto;
+  white-space:pre-wrap;   /* mantiene saltos de línea pero permite quebrares largos */
+}

@@ -1,0 +1,97 @@
+:root{
+      --azul:#003B5C;
+      --oro:#EAD991;
+      --oro-strong:#D7C26A;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background:var(--azul);
+      color:#fff;
+    }
+    .container{ max-width:1200px; margin:0 auto; padding:18px 18px 40px; }
+
+    .panel{
+      background:#fff;
+      color:var(--azul);
+      border:5px solid var(--oro);
+      border-radius:16px;
+      box-shadow:0 10px 28px rgba(0,0,0,.18);
+    }
+    .btn{
+      appearance:none; border:none; cursor:pointer;
+      font-weight:800; letter-spacing:.2px;
+      padding:10px 16px; border-radius:12px;
+      transition:transform .06s ease, filter .15s ease, background .15s ease;
+    }
+    .btn:active{ transform:translateY(1px) }
+    .btn-oro{ background:var(--oro); color:var(--azul); }
+    .btn-oro:hover{ background:var(--oro-strong) }
+
+    .nav{ display:flex; align-items:center; justify-content:space-between; gap:16px; padding:12px 16px; }
+    .brand{ display:flex; align-items:center; gap:10px; }
+    .brand img{height:44px; display:block}
+    .brand .title{font-weight:800; font-size:18px; color:var(--azul)}
+    .nav-right{ display:flex; align-items:center; gap:12px; }
+    .pill{
+      border:2px solid var(--oro);
+      color:var(--azul);
+      background:#fff;
+      padding:6px 10px;
+      border-radius:999px;
+      font-weight:700; font-size:13px;
+    }
+
+    .welcome{ margin-top:18px; padding:20px; }
+    .welcome h1{ margin:0 0 6px; font-size:clamp(22px, 4vw, 28px); font-weight:800; }
+    .welcome p{ margin:0; opacity:.85 }
+
+    .games-wrap{ margin-top:22px; }
+    .tiles{
+      display:flex; flex-wrap:wrap; gap:18px;
+      justify-content:center; align-items:flex-start;
+    }
+
+    /* ===== Tile compacta casi cuadrada ===== */
+    .tile{
+      width:300px;
+      aspect-ratio:1 / 1.05;
+      border:3px solid var(--oro);
+      border-radius:14px;
+      background:#fff; /* (si la quieres sin fondo, pon 'transparent') */
+      color:var(--azul);
+      box-shadow:0 8px 22px rgba(0,0,0,.22);
+      overflow:hidden;
+      display:grid;
+      grid-template-rows: auto auto auto;
+      transition:transform .12s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+    .tile:hover{ transform:translateY(-2px); box-shadow:0 14px 34px rgba(0,0,0,.28); border-color:var(--oro-strong); }
+
+    /* ===== IMAGEN: mostrar completa sin recortar =====
+       - altura fija del área de imagen
+       - img con object-fit: contain y padding interno
+    */
+    .tile-thumb{
+      height:150px;                      /* altura definida para controlar el recorte */
+      display:flex; align-items:center; justify-content:center;
+      background:#fff;                   /* mismo fondo blanco del tile */
+      border-bottom:3px solid var(--oro);
+      padding:10px;                      /* margen interno para que "respire" */
+    }
+    .tile-thumb img{
+      max-width:150%;
+      max-height:150%;
+      object-fit:contain;                /* << evita el recorte */
+      display:block;
+      image-rendering:auto;
+    }
+
+    .tile-body{ padding:10px 10px 0 }
+    .tile-title{ margin:0; font-weight:800; font-size:16px; letter-spacing:.2px }
+    .tile-text{ margin:4px 0 10px; font-size:12.5px; opacity:.95 }
+    .tile-actions{ padding:0 10px 10px }
+    .btn-block{ width:100% }

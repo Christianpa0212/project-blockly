@@ -1,0 +1,76 @@
+:root{
+    --azul:#003B5C; --oro:#EAD991; --oro-strong:#D7C26A;
+    --txt-azul:#002A42; --muted:#124561;
+    --error:#ef4444; --ok:#15803d; --radius-lg:20px;
+    --white:#fff;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;font-family:Inter,system-ui,sans-serif;color:var(--txt-azul);background:var(--azul);display:grid;place-items:center;padding:20px}
+  .stage{width:min(820px,100%);display:grid;gap:20px;justify-items:center}
+  .brand{display:flex;align-items:center;gap:18px;padding:12px 18px;border-radius:16px;background:var(--white);border:5px solid var(--oro);backdrop-filter:blur(6px)}
+  .blo-img{height:45px}
+  .ug-img{height:100px}
+  .card{width:100%;text-align:center;background:#fff;border:5px solid var(--oro);border-radius:var(--radius-lg);padding:34px 26px;box-shadow:0 18px 48px rgba(0,0,0,.28)}
+  .card h2{margin:0 0 10px;font-size:28px;font-weight:900}
+  .card p{margin:0;color:var(--muted)}
+  .hint{font-size:13px;margin-top:10px;color:#195376}
+  .form{margin-top:22px;display:grid;gap:16px;justify-items:center}
+  .label{font-weight:800;font-size:13px;letter-spacing:.35px}
+  .pin{display:flex;gap:14px;justify-content:center}
+  .pin input{width:70px;height:78px;text-align:center;font-size:28px;font-weight:900;color:var(--txt-azul);border-radius:16px;border:2px solid rgba(0,59,92,.25)}
+  .pin input:focus{border-color:var(--azul);box-shadow:0 0 0 6px rgba(0,59,92,.2)}
+  .actions{display:flex;gap:14px;margin-top:10px;flex-wrap:wrap;justify-content:center}
+  .btn{border:none;border-radius:14px;padding:12px 18px;font-weight:900;cursor:pointer;transition:.15s;color:var(--txt-azul)}
+  .btn:active{transform:translateY(1px)}.btn[disabled]{opacity:.65;cursor:not-allowed}
+  .btn-primary{background:var(--oro);border:2px solid var(--azul)}
+  .btn-primary:hover{background:var(--oro-strong);color:var(--txt-azul);border-color:var(--azul);box-shadow:0 10px 22px rgba(0,0,0,.08)}
+  .small-link{font-size:13px;color:#0a3752;text-decoration:none;font-weight:700}.small-link:hover{text-decoration:underline}
+  .status{font-size:13px;display:none}.status.error{color:var(--error)}.status.ok{color:var(--ok)}
+
+/* ===== MODAL REGISTRO ===== */
+.modal {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(6px);
+  z-index: 999;
+  animation: fadeIn .25s ease-out;
+}
+
+.modal.hidden {
+  display: none;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.modal .card {
+  width: min(480px, 90%);
+  /* 💡 Ya no usamos scroll interno */
+  max-height: none;
+  overflow: visible;
+  padding: 32px 26px;
+  text-align: center;
+}
+
+/* Inputs coherentes con tu estilo actual */
+.input {
+  width: 100%;
+  max-width: 320px;
+  padding: 10px 12px;
+  font-size: 16px;
+  border: 2px solid rgba(0,59,92,.25);
+  border-radius: 10px;
+  outline: none;
+  color: var(--txt-azul);
+  background: #fff;
+}
+
+.input:focus {
+  border-color: var(--azul);
+  box-shadow: 0 0 0 5px rgba(0,59,92,.2);
+}

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Inicia Sesión • Blockly Games</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static-files/css/login.css">
+</head>
+<body>
+  <main class="stage">
+    <!-- ====== HEADER ====== -->
+    <header class="brand">
+      <img class="ug-img" src="/static-files/img/ug.png" alt="Universidad de Guanajuato">
+      <img class="blo-img" src="/static-files/img/title.png" alt="Blockly Games">
+    </header>
+
+    <!-- ====== CARD LOGIN ====== -->
+    <section class="card" id="cardLogin">
+      <h2>Inicia Sesión Para Poder Jugar</h2>
+      <p>Ingresa tu PIN de 4 dígitos.</p>
+
+      <form class="form" id="formLogin" autocomplete="one-time-code">
+        <label class="label">PIN</label>
+        <div class="pin" id="pinGroup">
+          <input maxlength="1" inputmode="numeric" pattern="[0-9]*" />
+          <input maxlength="1" inputmode="numeric" pattern="[0-9]*" />
+          <input maxlength="1" inputmode="numeric" pattern="[0-9]*" />
+          <input maxlength="1" inputmode="numeric" pattern="[0-9]*" />
+        </div>
+
+        <div class="status error" id="msgError"></div>
+        <div class="status ok" id="msgOk">¡Listo! Entrando…</div>
+
+        <div class="actions">
+          <button class="btn btn-primary" id="btnSubmit" type="submit">Iniciar Sesión</button>
+          <button class="btn btn-primary" type="button" id="btnCreate">Crear Cuenta</button>
+        </div>
+
+        <p class="hint"><span class="hint">Se usa para guardar tu progreso.</span></p>
+      </form>
+    </section>
+  </main>
+
+  <!-- ====== MODAL REGISTRO JUGADOR ====== -->
+  <div id="modalRegister" class="modal hidden">
+    <section class="card">
+      <h2>Registrar Nuevo Jugador</h2>
+      <p>Completa los siguientes datos para crear tu cuenta de jugador.</p>
+
+      <form class="form" id="formRegister">
+        <label class="label">Nombre</label>
+        <input type="text" id="regNombre" class="input" required placeholder="Tu nombre" />
+
+        <label class="label">Apellidos</label>
+        <input type="text" id="regApellidos" class="input" required placeholder="Tus apellidos" />
+
+        <label class="label">Fecha de Nacimiento</label>
+        <input type="date" id="regFecha" class="input" required />
+
+        <label class="label">PIN (4 dígitos)</label>
+        <div class="pin" id="regPinGroup">
+          <input maxlength="1" inputmode="numeric" pattern="[0-9]*" />
+          <input maxlength="1" inputmode="numeric" pattern="[0-9]*" />
+          <input maxlength="1" inputmode="numeric" pattern="[0-9]*" />
+          <input maxlength="1" inputmode="numeric" pattern="[0-9]*" />
+        </div>
+
+        <div class="status error" id="msgRegError"></div>
+        <div class="status ok" id="msgRegOk">¡Jugador creado correctamente!</div>
+
+        <div class="actions">
+          <button class="btn btn-primary" id="btnRegister" type="submit">Registrar</button>
+          <button class="btn btn-ghost" type="button" id="btnCancelRegister">Cancelar</button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <script src="/static-files/js/login.js"></script>
+</body>
+</html>

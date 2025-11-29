@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Menú Principal • Blockly Games</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static-files/css/index-player.css">
+</head>
+<body>
+  <div class="container">
+    <!-- NAV -->
+    <nav class="panel nav" aria-label="Barra de navegación">
+      <div class="brand">
+        <img src="/static-files/img/title.png" alt="Blockly Games">
+        <span class="title">Blockly Games</span>
+      </div>
+      <div class="nav-right">
+        <span id="pinBadge" class="pill">PIN: —</span>
+        <button class="btn btn-oro" onclick="logout()" title="Cerrar sesión">
+          Logout
+        </button>
+      </div>
+    </nav>
+
+    <!-- Bienvenida -->
+    <section class="panel welcome" aria-labelledby="welcomeTitle">
+      <h1 id="welcomeTitle">Bienvenid@ <span id="userFullname">Jugador</span></h1>
+      <p>Elige un juego…</p>
+    </section>
+
+    <!-- Tarjetas de juegos -->
+    <section class="games-wrap" aria-label="Juegos disponibles">
+      <div class="tiles">
+        <!-- Tile: Maze -->
+        <article class="tile" aria-labelledby="mazeTitle">
+          <div class="tile-thumb">
+            <img src="/static-files/img/maze.png" alt="Vista previa del juego Maze" loading="lazy">
+          </div>
+          <div class="tile-body">
+            <h3 id="mazeTitle" class="tile-title">Laberinto</h3>
+            <p class="tile-text">
+              Resuelve laberintos utilizando bloques de movimiento.
+            </p>
+          </div>
+          <div class="tile-actions">
+            <button class="btn btn-oro btn-block" onclick="goMaze()">Jugar</button>
+          </div>
+        </article>
+
+        <!-- Tile: Bird -->
+        <article class="tile" aria-labelledby="birdTitle">
+          <div class="tile-thumb">
+            <img src="/static-files/img/bird.png" alt="Vista previa del juego Bird" loading="lazy">
+          </div>
+          <div class="tile-body">
+            <h3 id="birdTitle" class="tile-title">Pájaro</h3>
+            <p class="tile-text">
+              Controla el lanzamiento usando bloques para alcanzar el objetivo.
+            </p>
+          </div>
+          <div class="tile-actions">
+            <button class="btn btn-oro btn-block" onclick="goBird()">Jugar</button>
+          </div>
+        </article>
+      </div>
+    </section>
+  </div>
+
+  <script src="/static-files/js/index-player.js"></script>
+</body>
+</html>

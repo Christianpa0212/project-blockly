@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Login Investigador • Blockly Games</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <!-- Reutilizamos tu mismo CSS -->
+  <link rel="stylesheet" href="/static-files/css/login.css">
+</head>
+<body>
+  <main class="stage">
+    <!-- HEADER -->
+    <header class="brand">
+      <img class="ug-img" src="/static-files/img/ug.png" alt="Universidad de Guanajuato">
+      <img class="blo-img" src="/static-files/img/title.png" alt="Blockly Games">
+    </header>
+
+    <!-- CARD LOGIN INVESTIGADOR -->
+    <section class="card" id="cardLoginInv">
+      <h2>Acceso de Investigadores</h2>
+      <p>Ingresa tu PIN (4 dígitos) y tu contraseña.</p>
+
+      <form class="form" id="formLoginInv" autocomplete="current-password">
+        <label class="label">PIN</label>
+        <div class="pin" id="pinGroupInv">
+          <input maxlength="1" inputmode="numeric" pattern="[0-9]*" />
+          <input maxlength="1" inputmode="numeric" pattern="[0-9]*" />
+          <input maxlength="1" inputmode="numeric" pattern="[0-9]*" />
+          <input maxlength="1" inputmode="numeric" pattern="[0-9]*" />
+        </div>
+
+        <label class="label" for="passwordInv">Contraseña</label>
+        <input id="passwordInv" class="input" type="password" placeholder="••••••••" required />
+
+        <div class="status error" id="msgErrorInv"></div>
+        <div class="status ok" id="msgOkInv">Entrando…</div>
+
+        <div class="actions">
+          <button class="btn btn-primary" id="btnLoginInv" type="submit">Iniciar sesión</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script src="/static-files/js/login-inv.js"></script>
+</body>
+</html>
