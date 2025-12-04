@@ -143,8 +143,9 @@ http://localhost:<PORT>/login-inv → login de investigador.
 
 (El valor de <PORT> se define en el archivo .env.)
 
-9. Estructura relevante del proyecto
+## 9. Estructura relevante del proyecto
 
+```text
 project-blockly/
 ├─ client/
 │  └─ public/
@@ -163,4 +164,5 @@ project-blockly/
    │  └─ controllers/     # Auth, user, player, investigator
    ├─ .env                # Configuración de entorno
    └─ server.js           # Arranque de Express
+
 
