@@ -58,6 +58,7 @@ Los investigadores acceden a un panel web donde pueden:
 
 ### Investigador
 
+- Login con investigador por default con el PIN: **1234** y contraseña: **password**.
 - Login con **PIN + contraseña**.
 - Alta de nuevos investigadores.
 - Cambio de contraseña propia.
@@ -164,5 +165,6 @@ project-blockly/
    │  └─ controllers/     # Auth, user, player, investigator
    ├─ .env                # Configuración de entorno
    └─ server.js           # Arranque de Express
+
 
 
